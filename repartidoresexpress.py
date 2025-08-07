@@ -55,6 +55,59 @@ class EmpresaMensajera:
                 return elemento
         return None
 
+    def mostrar_ranking(self):
+        for elemento in self.repartidores:
+            print(elemento)
 
-mensajeria = {}
+    def estadisticas(self):
+        if not self.repartidores:
+            print("No hay repartidores registrados.")
+            return
+        for j in self.repartidores:
+            total = sum(j.paquetes)
+            promedio = total / len(self.repartidores)
+
+        max_entregas = -1
+        min_entregas = 10 * 9
+
+        repartidor_max = None
+        repartidor_min = None
+
+        for j in self.repartidores:
+            if j.paquetes > max_entregas:
+                max_entregas = j.paquetes
+                repartidor_max = j
+            if j.paquetes < min_entregas:
+                min_entregas = j.paquetes
+                repartidor_min = j
+
+        print(f"Mayor número de entregas: {repartidor_max.nombre} ({max_entregas})")
+        print(f"Menor número de entregas: {repartidor_min.nombre} ({min_entregas})")
+
+empresa = EmpresaMensajera()
+
 print("=== Rendimiento repartidores ===")
+
+cantidad = int(input("Cantidad de repartidores: "))
+for i in range(cantidad):
+    print(f"Ingrese datos del repartidor {i+1}:")
+    while True:
+        nombre = input("Ingrese el nombre: ")
+        if nombre == "" or nombre in empresa.repartidores:
+            print("Este nombre ya existe")
+        else:
+            break
+    paquetes = input("Ingrese los paquetes: ")
+    zona = input("Ingrese la zona: ")
+
+
+print("=== Lista original ===")
+for i in empresa.repartidores:
+    print(i)
+
+empresa.ordenar_por_paquetes()
+
+print("=== Ranking ===")
+empresa.mostrar_ranking()
+
+
