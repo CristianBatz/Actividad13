@@ -36,3 +36,4 @@ class EmpresaMensajera:
             if elemento == nombre:
                 return elemento
         return None
+
