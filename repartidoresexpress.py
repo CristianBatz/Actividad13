@@ -9,32 +9,25 @@ class Repartidor:
 
 
 class EmpresaMensajera:
-    def __init__(self, repartidores):
+    def __init__(self):
         self.repartidores = []
 
     def agregar_repartidores(self, repartidor):
-        if not repartidor.nombre == "":
+        if repartidor.nombre == "":
             print("Error: Nombre inválido.")
             return False
         if repartidor.paquetes < 0:
             print("Error: Paquetes deben ser un entero positivo.")
             return False
-        if not repartidor.zona == "":
+        if repartidor.zona == "":
             print("Error: Zona inválida.")
             return False
-
         if self.busqueda_de_valor(repartidor.nombre) is not None:
             print(f"Error: Ya existe repartidor con nombre '{repartidor.nombre}'.")
             return False
+
         self.repartidores.append(repartidor)
         return True
-
-    def repartidores_repetidos(self, nombre):
-        while True:
-            if nombre in self.repartidores:
-                print("Este nombre ya existe")
-            else:
-                break
 
     def ordenar_por_paquetes(self):
         def quick_sort(lista):
@@ -51,7 +44,7 @@ class EmpresaMensajera:
 
     def busqueda_de_valor(self, nombre):
         for elemento in self.repartidores:
-            if elemento == nombre:
+            if elemento.nombre == nombre:
                 return elemento
         return None
 
@@ -63,9 +56,9 @@ class EmpresaMensajera:
         if not self.repartidores:
             print("No hay repartidores registrados.")
             return
-        for j in self.repartidores:
-            total = sum(j.paquetes)
-            promedio = total / len(self.repartidores)
+
+        total = sum(r.paquetes for r in self.repartidores)
+        promedio = total / len(self.repartidores)
 
         max_entregas = -1
         min_entregas = 10 * 9
@@ -81,8 +74,11 @@ class EmpresaMensajera:
                 min_entregas = j.paquetes
                 repartidor_min = j
 
+        print(f"Total de entregas: {total}")
+        print(f"Promedio de entregas: {promedio:.2f}")
         print(f"Mayor número de entregas: {repartidor_max.nombre} ({max_entregas})")
         print(f"Menor número de entregas: {repartidor_min.nombre} ({min_entregas})")
+
 
 empresa = EmpresaMensajera()
 
@@ -90,16 +86,17 @@ print("=== Rendimiento repartidores ===")
 
 cantidad = int(input("Cantidad de repartidores: "))
 for i in range(cantidad):
-    print(f"Ingrese datos del repartidor {i+1}:")
+    print(f"Ingrese datos del repartidor {i + 1}:")
     while True:
         nombre = input("Ingrese el nombre: ")
-        if nombre == "" or nombre in empresa.repartidores:
+        if nombre == "" or empresa.busqueda_de_valor(nombre):
             print("Este nombre ya existe")
         else:
             break
-    paquetes = input("Ingrese los paquetes: ")
+    paquetes = int(input("Ingrese los paquetes: "))
     zona = input("Ingrese la zona: ")
-
+    repartidor = Repartidor(nombre, paquetes, zona)
+    empresa.agregar_repartidores(repartidor)
 
 print("=== Lista original ===")
 for i in empresa.repartidores:
@@ -110,4 +107,13 @@ empresa.ordenar_por_paquetes()
 print("=== Ranking ===")
 empresa.mostrar_ranking()
 
+print("=== Buscar repartidor ===")
+buscar_repartidor = input("Ingrese el repartidor que quiere buscar: ")
+resultado = empresa.busqueda_de_valor(buscar_repartidor)
+if resultado is not None:
+    print(resultado)
+else:
+    print("El repartidor no encontrado")
 
+print("=== Estadisticas ===")
+empresa.estadisticas()
